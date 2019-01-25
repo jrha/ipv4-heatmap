@@ -30,6 +30,7 @@ extern int debug;
 int hilbert_curve_order = -1;
 int addr_space_bits_per_image = 32;	/* /0 */
 int addr_space_bits_per_pixel = 8;	/* /24 */
+int pixels_per_pixel = 1;
 unsigned int addr_space_first_addr = 0;
 unsigned int addr_space_last_addr = ~0;
 
@@ -94,4 +95,14 @@ set_bits_per_pixel(int bpp)
     addr_space_bits_per_pixel = bpp;
     if (1 == (addr_space_bits_per_pixel % 2))
 	errx(1, "CIDR bits per pixel must be even");
+}
+
+void
+set_pixels_per_pixel(int ppp)
+{
+    fprintf(stderr, "ppp = %d\n", ppp);
+    pixels_per_pixel = ppp;
+    fprintf(stderr, "pixels_per_pixel = %d\n", pixels_per_pixel);
+    if (pixels_per_pixel <= 0)
+	errx(1, "Pixels per pixel must be a positive integer");
 }
