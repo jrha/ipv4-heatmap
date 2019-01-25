@@ -71,7 +71,9 @@ extern unsigned int xy_from_ip(unsigned ip, unsigned *xp, unsigned *yp);
 extern void set_morton_mode();
 extern int set_order();
 extern void set_crop(const char *);
+extern void set_pixels_per_pixel(int);
 extern void set_bits_per_pixel(int);
+extern int pixels_per_pixel;
 
 void savegif(int done);
 
@@ -91,8 +93,8 @@ initialize(void)
     int w;
     int h;
     int order = set_order();
-    w = 1<<order;
-    h = 1<<order;
+    w = (1<<order) * pixels_per_pixel;
+    h = (1<<order) * pixels_per_pixel;
     if (title && 4096 != w) {
 	warnx("Image width/height must be 4096 to render a legend.");
 	fprintf(stderr,
@@ -239,7 +241,16 @@ paint(void)
 	    k = NUM_DATA_COLORS - 1;
 	color = colors[k];
 
-	gdImageSetPixel(image, x, y, color);
+    if (pixels_per_pixel > 1) {
+        for (unsigned int i = 0; i < pixels_per_pixel - 1; i++) {
+            for (unsigned int j = 0; j < pixels_per_pixel - 1; j++) {
+	            gdImageSetPixel(image, x + i, y + j, color);
+	        }
+        }
+    } else {
+        gdImageSetPixel(image, x, y, color);
+    }
+
 	line++;
     }
 }
@@ -330,6 +341,7 @@ usage(const char *argv0)
     printf("\t-s file    shading file\n");
     printf("\t-t str     map title\n");
     printf("\t-u str     scale title in legend\n");
+    printf("\t-x pixels  output pixels per pixel\n");
     printf("\t-y cidr    address space to render\n");
     printf("\t-z bits    address space bits per pixel\n");
     exit(1);
@@ -339,7 +351,7 @@ int
 main(int argc, char *argv[])
 {
     int ch;
-    while ((ch = getopt(argc, argv, "A:B:a:Cc:df:g:hk:mo:prs:t:u:y:z:")) != -1) {
+    while ((ch = getopt(argc, argv, "A:B:a:Cc:df:g:hk:mo:prs:t:u:x:y:z:")) != -1) {
 	switch (ch) {
 	case 'A':
 	    log_A = atof(optarg);
@@ -395,6 +407,9 @@ main(int argc, char *argv[])
 	    break;
 	case 'y':
 	    set_crop(optarg);
+	    break;
+    case 'x':
+	    set_pixels_per_pixel(strtol(optarg, NULL, 10));
 	    break;
 	case 'z':
 	    set_bits_per_pixel(strtol(optarg, NULL, 10));

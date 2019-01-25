@@ -31,6 +31,7 @@ extern int debug;
 extern int morton_flag;
 extern unsigned int addr_space_first_addr;
 extern unsigned int addr_space_last_addr;
+extern int pixels_per_pixel;
 
 
 void
@@ -146,6 +147,12 @@ bbox_from_cidr(const char *cidr)
 	    "\n",
 	    cidr, fstr, lstr, last - first,
 	    bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax);
+    }
+    if (pixels_per_pixel > 1) {
+        bbox.xmin -= 1;
+        bbox.ymin -= 1;
+        bbox.xmax += pixels_per_pixel - 1;
+        bbox.ymax += pixels_per_pixel - 1;
     }
     return bbox;
 }

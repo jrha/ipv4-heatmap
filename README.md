@@ -115,6 +115,12 @@ See http://maps.measurement-factory.com/ for additional information and a galler
              resents some kind of utilization and prints percentages from 0 to
              100% next to the scale.
 
+     -x pixels
+             Specifies the number of pixels to render in the output image for
+             each pixel of address space. This can be used to scale-up the
+             image when representing a smaller total address space than
+             default e.g. 0.0.0.0/16.
+
      −y cidr
              Specifies the CIDR netblock that should be rendered.  The default
              is to render the entire IPv4 space (0.0.0.0/0).  The "slash"

@@ -22,6 +22,6 @@ hil_xy_from_s(unsigned s, int order, unsigned *xp, unsigned *yp)
 	y = (y << 1) | ((0x39C6 >> row) & 1);
 	state = (0x3E6B94C1 >> 2 * row) & 3;	/* New state. */
     }
-    *xp = x;			/* Pass back */
-    *yp = y;			/* results. */
+    *xp = x * pixels_per_pixel;			/* Pass back */
+    *yp = y * pixels_per_pixel;			/* results. */
 }
