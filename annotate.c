@@ -42,18 +42,18 @@ annotate_cidr(const char *cidr, const char *label, const char *sublabel)
 {
     bbox box = bbox_from_cidr(cidr);
     if (box.xmin < -1) {
-	fprintf(stderr, "Warning: annotation %s is out of range for this image\n", cidr);
-	return;
+        fprintf(stderr, "Warning: annotation %s is out of range for this image\n", cidr);
+        return;
     }
     bbox_draw_outline(box, image, annotateColor);
     text_in_bbox(label, box, annotateColor, 128.0);
     if (sublabel) {
-	bbox box2 = box;
-	box2.ymin = (box.ymin + box.ymax) / 2 + (int)(_text_last_sz / 2) + 6;
-	box2.ymax = box2.ymin + 24;
-	if (0 == strcmp(sublabel, "prefix"))
-	    sublabel = cidr;
-	text_in_bbox(sublabel, box2, annotateColor, 10.0);
+        bbox box2 = box;
+        box2.ymin = (box.ymin + box.ymax) / 2 + (int)(_text_last_sz / 2) + 6;
+        box2.ymax = box2.ymin + 24;
+        if (0 == strcmp(sublabel, "prefix"))
+            sublabel = cidr;
+        text_in_bbox(sublabel, box2, annotateColor, 10.0);
     }
 }
 
@@ -67,27 +67,27 @@ annotate_file(const char *fn)
     char buf[512];
     FILE *fp = fopen(fn, "r");
     if (NULL == fp)
-	err(1, "%s", fn);
+        err(1, "%s", fn);
     if (annotateColor < 0) {
-	if (reverse_flag)
-	    annotateColor = gdImageColorAllocateAlpha(image, 0, 0, 0, FONT_ALPHA);
-	else
-	    annotateColor = gdImageColorAllocateAlpha(image, 255, 255, 255, FONT_ALPHA);
+        if (reverse_flag)
+            annotateColor = gdImageColorAllocateAlpha(image, 0, 0, 0, FONT_ALPHA);
+        else
+            annotateColor = gdImageColorAllocateAlpha(image, 255, 255, 255, FONT_ALPHA);
     }
     if (!gdFTUseFontConfig(1))
-	warnx("fontconfig not available");
+        warnx("fontconfig not available");
     while (NULL != fgets(buf, 512, fp)) {
-	char *cidr;
-	char *label;
-	char *sublabel = NULL;
-	cidr = strtok(buf, "\t");
-	if (NULL == cidr)
-	    continue;
-	label = strtok(NULL, "\t\r\n");
-	if (NULL == label)
-	    continue;
-	sublabel = strtok(NULL, "\t\r\n");
-	annotate_cidr(cidr, label, sublabel);
+        char *cidr;
+        char *label;
+        char *sublabel = NULL;
+        cidr = strtok(buf, "\t");
+        if (NULL == cidr)
+            continue;
+        label = strtok(NULL, "\t\r\n");
+        if (NULL == label)
+            continue;
+        sublabel = strtok(NULL, "\t\r\n");
+        annotate_cidr(cidr, label, sublabel);
     }
     fclose(fp);
 }

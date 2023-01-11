@@ -79,39 +79,39 @@ bounding_box(unsigned int first, int slash)
     bbox box;
     unsigned int diag = 0xAAAAAAAA;
     if (morton_flag)
-	diag = 0xFFFFFFFF;
+        diag = 0xFFFFFFFF;
     unsigned int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 
     if (slash > 31) {
-	/*
-	 * treat /32 as a special case
-	 */
-	xy_from_ip(first, &x1, &y1);
-	box.xmin = x1;
-	box.ymin = y1;
-	box.xmax = x1;
-	box.ymax = y1;
+        /*
+         * treat /32 as a special case
+         */
+        xy_from_ip(first, &x1, &y1);
+        box.xmin = x1;
+        box.ymin = y1;
+        box.xmax = x1;
+        box.ymax = y1;
     } else if (0 == (slash & 1)) {
-	/*
-	 * square
-	 */
-	diag >>= slash;
-	xy_from_ip(first, &x1, &y1);
-	xy_from_ip(first + diag, &x2, &y2);
-	box.xmin = MIN(x1, x2);
-	box.ymin = MIN(y1, y2);
-	box.xmax = MAX(x1, x2);
-	box.ymax = MAX(y1, y2);
+        /*
+         * square
+         */
+        diag >>= slash;
+        xy_from_ip(first, &x1, &y1);
+        xy_from_ip(first + diag, &x2, &y2);
+        box.xmin = MIN(x1, x2);
+        box.ymin = MIN(y1, y2);
+        box.xmax = MAX(x1, x2);
+        box.ymax = MAX(y1, y2);
     } else {
-	/*
-	 * rectangle: divide, conquer
-	 */
-	bbox b1 = bounding_box(first, slash + 1);
-	bbox b2 = bounding_box(first + (1 << (32 - (slash + 1))), slash + 1);
-	box.xmin = MIN(b1.xmin, b2.xmin);
-	box.ymin = MIN(b1.ymin, b2.ymin);
-	box.xmax = MAX(b1.xmax, b2.xmax);
-	box.ymax = MAX(b1.ymax, b2.ymax);
+        /*
+         * rectangle: divide, conquer
+         */
+        bbox b1 = bounding_box(first, slash + 1);
+        bbox b2 = bounding_box(first + (1 << (32 - (slash + 1))), slash + 1);
+        box.xmin = MIN(b1.xmin, b2.xmin);
+        box.ymin = MIN(b1.ymin, b2.ymin);
+        box.xmax = MAX(b1.xmax, b2.xmax);
+        box.ymax = MAX(b1.ymax, b2.ymax);
     }
     return box;
 }
@@ -128,25 +128,25 @@ bbox_from_cidr(const char *cidr)
     bbox bbox;
     cidr_parse(cidr, &first, &last, &slash);
     if (first < addr_space_first_addr || last > addr_space_last_addr) {
-	bbox.xmin = bbox.ymin = bbox.xmax = bbox.ymax = -1;
-	return bbox;
+        bbox.xmin = bbox.ymin = bbox.xmax = bbox.ymax = -1;
+        return bbox;
     }
     memset(&bbox, '\0', sizeof(bbox));
     bbox = bounding_box(first, slash);
     if (debug) {
-	char fstr[24];
-	char lstr[24];
-	unsigned int tmp;
-	tmp = htonl(first);
-	inet_ntop(AF_INET, &tmp, fstr, 24);
-	tmp = htonl(last);
-	inet_ntop(AF_INET, &tmp, lstr, 24);
-	fprintf(stderr, "cidr=%s"
-	    ", first=%s, last=%s, last-first=%u"
-	    ", bbox=%d,%d to %d,%d"
-	    "\n",
-	    cidr, fstr, lstr, last - first,
-	    bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax);
+        char fstr[24];
+        char lstr[24];
+        unsigned int tmp;
+        tmp = htonl(first);
+        inet_ntop(AF_INET, &tmp, fstr, 24);
+        tmp = htonl(last);
+        inet_ntop(AF_INET, &tmp, lstr, 24);
+        fprintf(stderr, "cidr=%s"
+            ", first=%s, last=%s, last-first=%u"
+            ", bbox=%d,%d to %d,%d"
+            "\n",
+            cidr, fstr, lstr, last - first,
+            bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax);
     }
     if (pixels_per_pixel > 1) {
         bbox.xmin -= 1;

@@ -55,13 +55,13 @@ const char *shadings = NULL;
 const char *title = NULL;
 const char *legend_scale_name = NULL;
 int legend_prefixes_flag = 0;
-int reverse_flag = 0;		/* reverse background/font colors */
+int reverse_flag = 0;    /* reverse background/font colors */
 int morton_flag = 0;
-int accumulate_counts = 0;	/* for when the input data contains a value */
+int accumulate_counts = 0;    /* for when the input data contains a value */
 struct {
-	unsigned int secs;
-	double input_time;
-	time_t next_output;
+    unsigned int secs;
+    double input_time;
+    time_t next_output;
 } anim_gif = {0, 0.0, 0};
 const char *legend_keyfile = NULL;
 const char *savename = "map.png";
@@ -96,38 +96,38 @@ initialize(void)
     w = (1<<order) * pixels_per_pixel;
     h = (1<<order) * pixels_per_pixel;
     if (title && 4096 != w) {
-	warnx("Image width/height must be 4096 to render a legend.");
-	fprintf(stderr,
-		"\nIf you are using the -y or -z options, then your image size "
-		"may be smaller\n(or larger) than 4096.  The legend-rendering "
-		"code has a number of hard-coded\nparameters designed to work "
-		"with a 4096x4096 output image.\n");
-	exit(1);
+        warnx("Image width/height must be 4096 to render a legend.");
+        fprintf(stderr,
+                "\nIf you are using the -y or -z options, then your image size "
+                "may be smaller\n(or larger) than 4096.  The legend-rendering "
+                "code has a number of hard-coded\nparameters designed to work "
+                "with a 4096x4096 output image.\n");
+        exit(1);
     }
     if (NULL == title)
-	(void)0;		/* no legend */
+        (void)0;    /* no legend */
     else if (0 == strcmp(legend_orient, "horiz"))
-	h += (h>>2);
+        h += (h>>2);
     else
-	w += (w>>2);
+        w += (w>>2);
     if (debug) {
-	fprintf(stderr, "image width = %d\n", w);
-	fprintf(stderr, "image height = %d\n", h);
+        fprintf(stderr, "image width = %d\n", w);
+        fprintf(stderr, "image height = %d\n", h);
     }
     image = gdImageCreateTrueColor(w, h);
     if (image == NULL)
-	err(1, "gdImageCreateTrueColor(w=%d, h=%d)", w, h);
+        err(1, "gdImageCreateTrueColor(w=%d, h=%d)", w, h);
     /* first allocated color becomes background by default */
     if (reverse_flag)
-	gdImageFill(image, 0, 0, gdImageColorAllocate(image, 255, 255, 255));
+        gdImageFill(image, 0, 0, gdImageColorAllocate(image, 255, 255, 255));
 
     /*
      * The default color map ranges from red to blue
      */
     for (i = 0; i < NUM_DATA_COLORS; i++) {
         colors[i] = gdImageColorAllocate(image, 0, i*0.8, (255-i)*0.8);
-	if (debug > 1)
-	    fprintf(stderr, "colors[%d]=%d\n", i, colors[i]);
+        if (debug > 1)
+            fprintf(stderr, "colors[%d]=%d\n", i, colors[i]);
     }
     colors[0] = gdImageColorAllocate(image, 32, 32, 32);
     colors[1] = gdImageColorAllocate(image, 64, 64, 64);
@@ -137,7 +137,7 @@ initialize(void)
      * value of log_C.
      */
     if (0.0 != log_A && 0.0 == log_B)
-	log_B = 10.0 * log_A;
+        log_B = 10.0 * log_A;
     log_C = 255.0 / log(log_B / log_A);
 }
 
@@ -148,16 +148,16 @@ get_pixel_value(unsigned int x, unsigned int y)
     int k;
     color = gdImageGetPixel(image, x, y);
     if (debug)
-	fprintf(stderr, "pixel (%d,%d) has color index %d\n", x, y, color);
+        fprintf(stderr, "pixel (%d,%d) has color index %d\n", x, y, color);
     for (k = 0; k < NUM_DATA_COLORS; k++) {
-	if (colors[k] == color) {
-	    if (debug)
-		fprintf(stderr, "color %d has index %d\n", color, k);
-	    break;
-	}
+        if (colors[k] == color) {
+            if (debug)
+                fprintf(stderr, "color %d has index %d\n", color, k);
+            break;
+        }
     }
-    if (k == NUM_DATA_COLORS)	/* not found */
-	k = 0;
+    if (k == NUM_DATA_COLORS)    /* not found */
+        k = 0;
     return k;
 }
 
@@ -167,89 +167,89 @@ paint(void)
     char buf[512];
     unsigned int line = 1;
     while (fgets(buf, 512, stdin)) {
-	unsigned int i;
-	unsigned int x;
-	unsigned int y;
-	int color = -1;
-	int k;
-	char *strtok_arg = buf;
-	char *t;
+        unsigned int i;
+        unsigned int x;
+        unsigned int y;
+        int color = -1;
+        int k;
+        char *strtok_arg = buf;
+        char *t;
 
-	/*
-	 * In animated gif mode the first field is a timestamp
-	 */
-	if (anim_gif.secs) {
-	    char *e;
-	    t = strtok(strtok_arg, whitespace);
-	    strtok_arg = NULL;
-	    if (NULL == t)
-		continue;
-	    anim_gif.input_time = strtod(t, &e);
-	    if (e == t)
-		errx(1, "bad input parsing time on line %d: %s", line, t);
-	    if ((time_t) anim_gif.input_time > anim_gif.next_output) {
-		savegif(0);
-		anim_gif.next_output = (time_t) anim_gif.input_time + anim_gif.secs;
-	    }
-	}
-
-	/*
-	 * next field is an IP address.  We also accept its integer notation
-	 * equivalent.
-	 */
-	t = strtok(strtok_arg, whitespace);
-	strtok_arg = NULL;
-	if (NULL == t)
-	    continue;
-	if (strspn(t, "0123456789") == strlen(t))
-	    i = strtoul(t, NULL, 10);
-	else if (1 == inet_pton(AF_INET, t, &i))
-	    i = ntohl(i);
-	else
-	    errx(1, "bad input parsing IP on line %d: %s", line, t);
-
-	if (0 == xy_from_ip(i, &x, &y))
-	    continue;
-	if (debug)
-	    fprintf(stderr, "%s => %u => (%d,%d)\n", t, i, x, y);
-
-	/*
-	 * next field is an optional value, which might also be
-	 * logarithmically scaled by us.  If no value is given, then find the
-	 * existing value at that point and increment by one.
-	 */
-	t = strtok(NULL, whitespace);
-	if (NULL != t) {
-	    k = atoi(t);
-	    if (accumulate_counts)
-		k += get_pixel_value(x, y);
-	    if (0.0 != log_A) {
-		/*
-		 * apply logarithmic stretching
-		 */
-		k = (int) ((log_C * log((double) k / log_A)) + 0.5);
-	    }
-	} else {
-	    k = get_pixel_value(x, y);
-	    k++;
-	}
-	if (k < 0)
-	    k = 0;
-	if (k >= NUM_DATA_COLORS)
-	    k = NUM_DATA_COLORS - 1;
-	color = colors[k];
-
-    if (pixels_per_pixel > 1) {
-        for (unsigned int i = 0; i < pixels_per_pixel - 1; i++) {
-            for (unsigned int j = 0; j < pixels_per_pixel - 1; j++) {
-	            gdImageSetPixel(image, x + i, y + j, color);
-	        }
+        /*
+         * In animated gif mode the first field is a timestamp
+         */
+        if (anim_gif.secs) {
+            char *e;
+            t = strtok(strtok_arg, whitespace);
+            strtok_arg = NULL;
+            if (NULL == t)
+                continue;
+            anim_gif.input_time = strtod(t, &e);
+            if (e == t)
+                errx(1, "bad input parsing time on line %d: %s", line, t);
+            if ((time_t) anim_gif.input_time > anim_gif.next_output) {
+                savegif(0);
+                anim_gif.next_output = (time_t) anim_gif.input_time + anim_gif.secs;
+            }
         }
-    } else {
-        gdImageSetPixel(image, x, y, color);
-    }
 
-	line++;
+        /*
+         * next field is an IP address.  We also accept its integer notation
+         * equivalent.
+         */
+        t = strtok(strtok_arg, whitespace);
+        strtok_arg = NULL;
+        if (NULL == t)
+            continue;
+        if (strspn(t, "0123456789") == strlen(t))
+            i = strtoul(t, NULL, 10);
+        else if (1 == inet_pton(AF_INET, t, &i))
+            i = ntohl(i);
+        else
+            errx(1, "bad input parsing IP on line %d: %s", line, t);
+
+        if (0 == xy_from_ip(i, &x, &y))
+            continue;
+        if (debug)
+            fprintf(stderr, "%s => %u => (%d,%d)\n", t, i, x, y);
+
+        /*
+         * next field is an optional value, which might also be
+         * logarithmically scaled by us.  If no value is given, then find the
+         * existing value at that point and increment by one.
+         */
+        t = strtok(NULL, whitespace);
+        if (NULL != t) {
+            k = atoi(t);
+            if (accumulate_counts)
+                k += get_pixel_value(x, y);
+            if (0.0 != log_A) {
+                /*
+                 * apply logarithmic stretching
+                 */
+                k = (int) ((log_C * log((double) k / log_A)) + 0.5);
+            }
+        } else {
+            k = get_pixel_value(x, y);
+            k++;
+        }
+        if (k < 0)
+            k = 0;
+        if (k >= NUM_DATA_COLORS)
+            k = NUM_DATA_COLORS - 1;
+        color = colors[k];
+
+        if (pixels_per_pixel > 1) {
+            for (unsigned int i = 0; i < pixels_per_pixel - 1; i++) {
+                for (unsigned int j = 0; j < pixels_per_pixel - 1; j++) {
+                    gdImageSetPixel(image, x + i, y + j, color);
+                }
+            }
+        } else {
+            gdImageSetPixel(image, x, y, color);
+        }
+
+        line++;
     }
 }
 
@@ -258,9 +258,9 @@ watermark(void)
 {
     int color = gdImageColorAllocateAlpha(image, 127, 127, 127, 63);
     gdImageStringUp(image,
-	gdFontGetSmall(),
-	gdImageSX(image) - 20, 220,
-	(u_char *) "IPv4 Heatmap / Measurement Factory", color);
+        gdFontGetSmall(),
+        gdImageSX(image) - 20, 220,
+        (u_char *) "IPv4 Heatmap / Measurement Factory", color);
 }
 
 void
@@ -276,36 +276,36 @@ save(void)
 void
 savegif(int done)
 {
-	static int ngif = 0;
-	static char *tdir = NULL;
-	static char tmpl[] = "heatmap-tmp-XXXXXX";
-	char fname[512];
-	FILE *gifout = NULL;
-	if (NULL == tdir) {
-		tdir = mkdtemp(tmpl);
-		if (NULL == tdir)
-			err(1, "%s", tmpl);
-	}
-	snprintf(fname, 512, "%s/%07d.gif", tdir, ngif++);
-	gifout = fopen(fname, "wb");
-	if (NULL == gifout)
-		err(1, "%s", fname);
-	gdImageGif(image, gifout);
-	fclose(gifout);
-	/* don't destroy image! */
-	if (done) {
-		char cmd[512];
-		snprintf(cmd, 512, "gifsicle --colors 256 %s/*.gif > %s", tdir, savename);
-		fprintf(stderr, "Executing: %s\n", cmd);
-		if (0 != system(cmd))
-			errx(1, "gifsicle failed");
-		snprintf(cmd, 512, "rm -rf %s", tdir);
-		fprintf(stderr, "Executing: %s\n", cmd);
-		system(cmd);
-		tdir = NULL;
-		gdImageDestroy(image);
-		image = NULL;
-	}
+    static int ngif = 0;
+    static char *tdir = NULL;
+    static char tmpl[] = "heatmap-tmp-XXXXXX";
+    char fname[512];
+    FILE *gifout = NULL;
+    if (NULL == tdir) {
+        tdir = mkdtemp(tmpl);
+        if (NULL == tdir)
+            err(1, "%s", tmpl);
+    }
+    snprintf(fname, 512, "%s/%07d.gif", tdir, ngif++);
+    gifout = fopen(fname, "wb");
+    if (NULL == gifout)
+        err(1, "%s", fname);
+    gdImageGif(image, gifout);
+    fclose(gifout);
+    /* don't destroy image! */
+    if (done) {
+        char cmd[512];
+        snprintf(cmd, 512, "gifsicle --colors 256 %s/*.gif > %s", tdir, savename);
+        fprintf(stderr, "Executing: %s\n", cmd);
+        if (0 != system(cmd))
+            errx(1, "gifsicle failed");
+        snprintf(cmd, 512, "rm -rf %s", tdir);
+        fprintf(stderr, "Executing: %s\n", cmd);
+        system(cmd);
+        tdir = NULL;
+        gdImageDestroy(image);
+        image = NULL;
+    }
 }
 
 void
@@ -314,9 +314,9 @@ usage(const char *argv0)
     const char *t = strrchr(argv0, '/');
     printf("IPv4 Heatmap"
 #ifdef RELEASE_VER
-	" (release " RELEASE_VER ")"
+        " (release " RELEASE_VER ")"
 #endif
-	"\n");
+        "\n");
     printf("(C) 2007 The Measurement Factory, Inc\n");
     printf("Licensed under the GPL, version 2\n");
     printf("http://maps.measurement-factory.com/\n");
@@ -350,72 +350,72 @@ main(int argc, char *argv[])
 {
     int ch;
     while ((ch = getopt(argc, argv, "A:B:a:Cc:df:g:hk:mo:prs:t:u:x:y:z:")) != -1) {
-	switch (ch) {
-	case 'A':
-	    log_A = atof(optarg);
-	    break;
-	case 'B':
-	    log_B = atof(optarg);
-	    break;
-	case 'C':
-	    accumulate_counts = 1;
-	    break;
-	case 'd':
-	    debug++;
-	    break;
-	case 'a':
-	    annotations = strdup(optarg);
-	    break;
-	case 'c':
-	    annotateColor = strtol(optarg, NULL, 16);
-	    break;
-	case 's':
-	    shadings = strdup(optarg);
-	    break;
-	case 'f':
-	    font_file_or_name = strdup(optarg);
-	    break;
-	case 'g':
-	    anim_gif.secs = strtol(optarg, NULL, 10);
-	    break;
-	case 'h':
-	    legend_orient = "horiz";
-	    break;
-	case 'k':
-	    legend_keyfile = strdup(optarg);
-	    break;
-	case 'o':
-	    savename = strdup(optarg);
-	    break;
-	case 'm':
-		morton_flag = 1;
-		set_morton_mode();
-		break;
-	case 't':
-	    title = strdup(optarg);
-	    break;
-	case 'p':
-	    legend_prefixes_flag = 1;
-	    break;
-	case 'u':
-	    legend_scale_name = strdup(optarg);
-	    break;
-	case 'r':
-	    reverse_flag = 1;
-	    break;
-	case 'y':
-	    set_crop(optarg);
-	    break;
-    case 'x':
-	    set_pixels_per_pixel(strtol(optarg, NULL, 10));
-	    break;
-	case 'z':
-	    set_bits_per_pixel(strtol(optarg, NULL, 10));
-	    break;
-	default:
-	    usage(argv[0]);
-	    break;
-	}
+        switch (ch) {
+            case 'A':
+                log_A = atof(optarg);
+                break;
+            case 'B':
+                log_B = atof(optarg);
+                break;
+            case 'C':
+                accumulate_counts = 1;
+                break;
+            case 'd':
+                debug++;
+                break;
+            case 'a':
+                annotations = strdup(optarg);
+                break;
+            case 'c':
+                annotateColor = strtol(optarg, NULL, 16);
+                break;
+            case 's':
+                shadings = strdup(optarg);
+                break;
+            case 'f':
+                font_file_or_name = strdup(optarg);
+                break;
+            case 'g':
+                anim_gif.secs = strtol(optarg, NULL, 10);
+                break;
+            case 'h':
+                legend_orient = "horiz";
+                break;
+            case 'k':
+                legend_keyfile = strdup(optarg);
+                break;
+            case 'o':
+                savename = strdup(optarg);
+                break;
+            case 'm':
+                morton_flag = 1;
+                set_morton_mode();
+                break;
+            case 't':
+                title = strdup(optarg);
+                break;
+            case 'p':
+                legend_prefixes_flag = 1;
+                break;
+            case 'u':
+                legend_scale_name = strdup(optarg);
+                break;
+            case 'r':
+                reverse_flag = 1;
+                break;
+            case 'y':
+                set_crop(optarg);
+                break;
+            case 'x':
+                set_pixels_per_pixel(strtol(optarg, NULL, 10));
+                break;
+            case 'z':
+                set_bits_per_pixel(strtol(optarg, NULL, 10));
+                break;
+            default:
+                usage(argv[0]);
+                break;
+        }
     }
     argc -= optind;
     argv += optind;
@@ -423,14 +423,14 @@ main(int argc, char *argv[])
     initialize();
     paint();
     if (shadings)
-	shade_file(shadings);
+        shade_file(shadings);
     if (annotations)
-	annotate_file(annotations);
+        annotate_file(annotations);
     if (title)
-	legend(title, legend_orient);
+        legend(title, legend_orient);
     if (anim_gif.secs)
-	savegif(1);
+        savegif(1);
     else
-    	save();
+        save();
     return 0;
 }

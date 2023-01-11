@@ -28,8 +28,8 @@ extern int debug;
  * a /24.
  */
 int hilbert_curve_order = -1;
-int addr_space_bits_per_image = 32;	/* /0 */
-int addr_space_bits_per_pixel = 8;	/* /24 */
+int addr_space_bits_per_image = 32;    /* /0 */
+int addr_space_bits_per_pixel = 8;    /* /24 */
 int pixels_per_pixel = 1;
 unsigned int addr_space_first_addr = 0;
 unsigned int addr_space_last_addr = ~0;
@@ -45,9 +45,9 @@ xy_from_ip(unsigned ip, unsigned *xp, unsigned *yp)
 {
     unsigned int s;
     if (ip < addr_space_first_addr)
-	return 0;
+        return 0;
     if (ip > addr_space_last_addr)
-	return 0;
+        return 0;
     s = (ip - addr_space_first_addr) >> addr_space_bits_per_pixel;
     xy_from_s(s, hilbert_curve_order, xp, yp);
     return 1;
@@ -65,17 +65,17 @@ set_order()
 {
     hilbert_curve_order = (addr_space_bits_per_image - addr_space_bits_per_pixel) / 2;
     if (debug) {
-	struct in_addr a;
-	char buf[20];
-	fprintf(stderr, "addr_space_bits_per_image = %d\n", addr_space_bits_per_image);
-	fprintf(stderr, "addr_space_bits_per_pixel = %d\n", addr_space_bits_per_pixel);
-	fprintf(stderr, "hilbert_curve_order = %d\n", hilbert_curve_order);
-	a.s_addr = htonl(addr_space_first_addr);
-	inet_ntop(AF_INET, &a, buf, 20);
-	fprintf(stderr, "first_address = %s\n", buf);
-	a.s_addr = htonl(addr_space_last_addr);
-	inet_ntop(AF_INET, &a, buf, 20);
-	fprintf(stderr, "last = %s\n", buf);
+        struct in_addr a;
+        char buf[20];
+        fprintf(stderr, "addr_space_bits_per_image = %d\n", addr_space_bits_per_image);
+        fprintf(stderr, "addr_space_bits_per_pixel = %d\n", addr_space_bits_per_pixel);
+        fprintf(stderr, "hilbert_curve_order = %d\n", hilbert_curve_order);
+        a.s_addr = htonl(addr_space_first_addr);
+        inet_ntop(AF_INET, &a, buf, 20);
+        fprintf(stderr, "first_address = %s\n", buf);
+        a.s_addr = htonl(addr_space_last_addr);
+        inet_ntop(AF_INET, &a, buf, 20);
+        fprintf(stderr, "last = %s\n", buf);
     }
     return hilbert_curve_order;
 }
@@ -86,7 +86,7 @@ set_crop(const char *cidr)
     cidr_parse(cidr, &addr_space_first_addr, &addr_space_last_addr, &addr_space_bits_per_image);
     addr_space_bits_per_image = 32 - addr_space_bits_per_image;
     if (1 == (addr_space_bits_per_image % 2))
-	errx(1, "Space to render must have even number of CIDR bits");
+        errx(1, "Space to render must have even number of CIDR bits");
 }
 
 void
@@ -94,7 +94,7 @@ set_bits_per_pixel(int bpp)
 {
     addr_space_bits_per_pixel = bpp;
     if (1 == (addr_space_bits_per_pixel % 2))
-	errx(1, "CIDR bits per pixel must be even");
+        errx(1, "CIDR bits per pixel must be even");
 }
 
 void
@@ -104,5 +104,5 @@ set_pixels_per_pixel(int ppp)
     pixels_per_pixel = ppp;
     fprintf(stderr, "pixels_per_pixel = %d\n", pixels_per_pixel);
     if (pixels_per_pixel <= 0)
-	errx(1, "Pixels per pixel must be a positive integer");
+        errx(1, "Pixels per pixel must be a positive integer");
 }

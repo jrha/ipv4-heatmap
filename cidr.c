@@ -35,20 +35,20 @@ cidr_parse(const char *cidr, unsigned int *rfirst, unsigned int *rlast, int *rsl
     strncpy(cidr_copy, cidr, 24);
     t = strchr(cidr_copy, '/');
     if (NULL == t) {
-	warnx("missing / on CIDR '%s'\n", cidr_copy);
-	return 0;;
+        warnx("missing / on CIDR '%s'\n", cidr_copy);
+        return 0;;
     }
     *t++ = '\0';
     slash = atoi(t);
     if (1 != inet_pton(AF_INET, cidr_copy, &first)) {
-	warnx("inet_pton failed on '%s'\n", cidr_copy);
-	return 0;
+        warnx("inet_pton failed on '%s'\n", cidr_copy);
+        return 0;
     }
     first = ntohl(first);
     if (slash < 32)
-	last = first | (allones >> slash);
+        last = first | (allones >> slash);
     else
-	last = first;
+        last = first;
     *rfirst = first;
     *rlast = last;
     *rslash = slash;

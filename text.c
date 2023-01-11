@@ -31,10 +31,10 @@ text_width_height(const char *text, double sz, int *w, int *h)
 {
     static int brect[8];
     char *errmsg = gdImageStringFT(NULL, &brect[0], 0,
-	(char *)font_file_or_name,
-	sz, 0.0, 0, 0, (char *)text);
+        (char *)font_file_or_name,
+        sz, 0.0, 0, 0, (char *)text);
     if (NULL != errmsg)
-	errx(1, "%s", errmsg);
+        errx(1, "%s", errmsg);
     *w = brect[2] - brect[0];
     *h = brect[3] - brect[5];
     return &brect[0];
@@ -63,26 +63,26 @@ text_in_bbox(const char *text, bbox box, int color, double maxsize)
      * convert newlines
      */
     for (s = text, d = text_copy; *s; s++, d++) {
-	if (*s == '\\' && *(s + 1) == 'n')
-	    s++, *d = '\n';
-	else
-	    *d = *s;
+        if (*s == '\\' && *(s + 1) == 'n')
+            s++, *d = '\n';
+        else
+            *d = *s;
     }
     if (maxsize < 1.0)
-	maxsize = 128.0;
+        maxsize = 128.0;
     for (sz = maxsize; sz > 6.0; sz *= 0.9) {
-	(void)text_width_height("ABCD", sz, &tw, &oneline_h);
-	brectPtr = text_width_height(text_copy, sz, &tw, &th);
-	if (tw > ((box.xmax - box.xmin) * 95 / 100))
-	    continue;
-	if (th > ((box.ymax - box.ymin) * 95 / 100))
-	    continue;
-	gdImageStringFT(image, brectPtr, color,
-	    (char *)font_file_or_name, sz, 0.0,
-	    ((box.xmin + box.xmax) / 2) - (tw / 2),
-	    ((box.ymin + box.ymax) / 2) - (th / 2) + oneline_h,
-	    text_copy);
-	_text_last_sz = sz;
-	break;
+        (void)text_width_height("ABCD", sz, &tw, &oneline_h);
+        brectPtr = text_width_height(text_copy, sz, &tw, &th);
+        if (tw > ((box.xmax - box.xmin) * 95 / 100))
+            continue;
+        if (th > ((box.ymax - box.ymin) * 95 / 100))
+            continue;
+        gdImageStringFT(image, brectPtr, color,
+            (char *)font_file_or_name, sz, 0.0,
+            ((box.xmin + box.xmax) / 2) - (tw / 2),
+            ((box.ymin + box.ymax) / 2) - (th / 2) + oneline_h,
+            text_copy);
+        _text_last_sz = sz;
+        break;
     }
 }
