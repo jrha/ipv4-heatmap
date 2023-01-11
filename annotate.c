@@ -71,7 +71,7 @@ annotate_file(const char *fn)
     if (annotateColor < 0) {
 	if (reverse_flag)
 	    annotateColor = gdImageColorAllocateAlpha(image, 0, 0, 0, FONT_ALPHA);
-	else 
+	else
 	    annotateColor = gdImageColorAllocateAlpha(image, 255, 255, 255, FONT_ALPHA);
     }
     if (!gdFTUseFontConfig(1))

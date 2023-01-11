@@ -66,7 +66,7 @@ bbox_draw_filled(bbox box, gdImagePtr image, int color)
 /*
  * Find the "bounding box" for the IPv4 netblock starting at 'first' and having
  * 'slash' netmask bits.
- * 
+ *
  * For square areas this is pretty easy.  We know how to find the point diagonally
  * opposite the first value (add 1010..1010). Its a little harder for
  * rectangular areas, so I cheat a little and divide it into the two smaller

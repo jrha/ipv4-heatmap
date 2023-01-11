@@ -7,13 +7,13 @@
 
 /*
  * ipv4-heatmap produces a "map" of IPv4 address space.
- * 
+ *
  * input is a list of IPv4 addrs and optional value for each.
- * 
+ *
  * Data is drawn using a hilbert curve, which preserves grouping see
  * http://xkcd.com/195/ and http://en.wikipedia.org/wiki/Hilbert_curve see
  * Hacker's Delight (Henry S. Warren, Jr. 2002), sec 14-2, fig 14-5
- * 
+ *
  * output is a squre PNG file
  */
 
@@ -279,7 +279,7 @@ savegif(int done)
 	}
 	snprintf(fname, 512, "%s/%07d.gif", tdir, ngif++);
 	gifout = fopen(fname, "wb");
-	if (NULL == gifout)	
+	if (NULL == gifout)
 		err(1, "%s", fname);
 	gdImageGif(image, gifout);
 	fclose(gifout);
