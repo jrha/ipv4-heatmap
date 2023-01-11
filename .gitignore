@@ -1,0 +1,4 @@
+*.o
+web/raw/
+web/tiles/
+ipv4-heatmap
