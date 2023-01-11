@@ -22,7 +22,7 @@
  * FONT_ALPHA sets the transparency for the annotations. in libgd, 0 means 100%
  * transparent, and 127 means 100% opaque.
  */
-#define FONT_ALPHA 75
+#define FONT_ALPHA 50
 
 extern gdImagePtr image;
 extern const char *font_file_or_name;
@@ -53,7 +53,7 @@ annotate_cidr(const char *cidr, const char *label, const char *sublabel)
 	box2.ymax = box2.ymin + 24;
 	if (0 == strcmp(sublabel, "prefix"))
 	    sublabel = cidr;
-	text_in_bbox(sublabel, box2, annotateColor, 12.0);
+	text_in_bbox(sublabel, box2, annotateColor, 10.0);
     }
 }
 
