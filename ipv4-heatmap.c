@@ -125,14 +125,12 @@ initialize(void)
      * The default color map ranges from red to blue
      */
     for (i = 0; i < NUM_DATA_COLORS; i++) {
-	double hue;
-	double r, g, b;
-	hue = 240.0 * (255 - i) / 255;
-	PIX_HSV_TO_RGB_COMMON(hue, 1.0, 1.0, r, g, b);
-	colors[i] = gdImageColorAllocate(image, r, g, b);
+        colors[i] = gdImageColorAllocate(image, 0, i*0.8, (255-i)*0.8);
 	if (debug > 1)
 	    fprintf(stderr, "colors[%d]=%d\n", i, colors[i]);
     }
+    colors[0] = gdImageColorAllocate(image, 32, 32, 32);
+    colors[1] = gdImageColorAllocate(image, 64, 64, 64);
 
     /*
      * If the input data should be logarithmically scaled, then calculate the
