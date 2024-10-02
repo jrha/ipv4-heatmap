@@ -2,3 +2,5 @@
 web/raw/
 web/tiles/
 ipv4-heatmap
+annotations_*
+*.json
