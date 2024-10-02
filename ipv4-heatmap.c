@@ -37,7 +37,7 @@
 #include "hsv2rgb.h"
 #include "cidr.h"
 
-#define NUM_DATA_COLORS 256
+#define NUM_DATA_COLORS 8
 #undef RELEASE_VER
 
 extern void annotate_file(const char *fn);
@@ -89,7 +89,6 @@ double log_C = 0.0;
 void
 initialize(void)
 {
-    int i;
     int w;
     int h;
     int order = set_order();
@@ -121,16 +120,14 @@ initialize(void)
     if (reverse_flag)
         gdImageFill(image, 0, 0, gdImageColorAllocate(image, 255, 255, 255));
 
-    /*
-     * The default color map ranges from red to blue
-     */
-    for (i = 0; i < NUM_DATA_COLORS; i++) {
-        colors[i] = gdImageColorAllocate(image, 0, i*0.8, (255-i)*0.8);
-        if (debug > 1)
-            fprintf(stderr, "colors[%d]=%d\n", i, colors[i]);
-    }
-    colors[0] = gdImageColorAllocate(image, 32, 32, 32);
-    colors[1] = gdImageColorAllocate(image, 64, 64, 64);
+    colors[0] = gdImageColorAllocate(image, 0x20, 0x20, 0x20);
+    colors[1] = gdImageColorAllocate(image, 0x40, 0x40, 0x40);
+    colors[2] = gdImageColorAllocate(image, 0x15, 0x4b, 0x7a);
+    colors[3] = gdImageColorAllocate(image, 0x00, 0x6a, 0x95);
+    colors[4] = gdImageColorAllocate(image, 0x00, 0x87, 0x9f);
+    colors[5] = gdImageColorAllocate(image, 0x00, 0xa6, 0xa5);
+    colors[6] = gdImageColorAllocate(image, 0x00, 0xc7, 0x9c);
+    colors[7] = gdImageColorAllocate(image, 0x54, 0xe3, 0x87);
 
     /*
      * If the input data should be logarithmically scaled, then calculate the
