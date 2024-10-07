@@ -62,7 +62,7 @@ i=3 # Initial Palette Offset
 tmpdir="$(mktemp -d)"
 for l in overayear year month week yesterday today; do
     update_tsv \
-        '{ ip_address_list( dns_name__empty: false vrf_id: null family: 4 parent: "130.246.0.0/16" tag: ["lastseen'$l'"] ) { address } }' \
+        '{ ip_address_list( family: 4 parent: "130.246.0.0/16" tag: ["lastseen'$l'"] ) { address } }' \
         '.data.ip_address_list' \
         ".address, $i" \
         "$tmpdir/lastseen$l"
