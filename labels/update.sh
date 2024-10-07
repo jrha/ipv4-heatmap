@@ -47,7 +47,7 @@ jq 'with_entries(if .value == null or .value == "" then empty else . end)' ip2ho
 
 # Network Subnets/Prefixes for annotating map
 i=0
-for len in 22 24 26 28 30 30 30; do
+for len in 22 24 26 28 30 32 32; do
     update_tsv \
         '{ prefix_list(family: 4, within: "130.246.0.0/16", mask_length__lte: '$len') { prefix description tenant { name } } }' \
         '.data.prefix_list' \
