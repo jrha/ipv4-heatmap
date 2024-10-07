@@ -126,10 +126,10 @@ function subnetMid2(adr, len) {
 
 
 function onMapClick(e) {
-    var x = Math.floor(e.latlng.lng);
-    var y = 255 - Math.floor(e.latlng.lat);
-    var ip = xy2ip[x][y];
-    var content = '<b><a href="https://netbox.esc.rl.ac.uk/search/?q=' + ip + '&obj_types=ipam.ipaddress&lookup=iregex">' + ip + '</a></b>';
+    let x = Math.floor(e.latlng.lng);
+    let y = 255 - Math.floor(e.latlng.lat);
+    let ip = xy2ip[x][y];
+    let content = '<b><a href="https://netbox.esc.rl.ac.uk/search/?q=' + ip + '&obj_types=ipam.ipaddress&lookup=iregex">' + ip + '</a></b>';
 
     if (ip2hostname[ip] !== undefined) {
         content += '<br>' + ip2hostname[ip];
