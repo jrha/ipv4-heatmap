@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>130.246.0.0/16</title>
 
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
-    <style type="text/css">
+    <style>
         html, body {
             background-color: #333;
             color: #ddd;
@@ -35,9 +35,9 @@
 <body>
 
 <div class="container-fluid" style="height: 100%;">
-  <div class="row" style="height: 100%;">
-    <div class="col-">
-      <div><h1>Key</h1></div>
+    <div class="row" style="height: 100%;">
+        <div class="col-">
+            <div><h1>Key</h1></div>
 <?php
     echo "<div class=\"scale\" style=\"background-color: #202020;\" title=\"IP in NetBox, but never seen.\">IP</div>\n";
     echo "<div class=\"scale\" style=\"background-color: #404040;\" title=\"DNS for IP in NetBox, but never seen.\">DNS</div>\n";
@@ -48,25 +48,24 @@
     echo "<div class=\"scale\" style=\"background-color: #00c79c\">Yesterday</div>\n";
     echo "<div class=\"scale\" style=\"background-color: #54e387\">Today</div>\n";
 ?>
-    </div>
-    <div class="col-lg">
-      <div id="map" style="height: 100%; margin: auto;"></div>
+        </div>
+        <div class="col-lg">
+            <div id="map" style="height: 100%; margin: auto;"></div>
+        </div>
     </div>
 </div>
 
-
 <div style="position: absolute; top: 0; right: 0; z-index: 4096; text-align: right; margin-top: 2px; margin-right: 2px;">
     <div class="input-group mb-1 was-validated">
-        <input class="form-control" type="text" required pattern="(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/(3[0-2]|2[0-9]|1[6-9]))?" id="ipsearch" placeholder="130.246.127.255"></input>
+        <input class="form-control" type="text" required pattern="(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/(3[0-2]|2[0-9]|1[6-9]))?" id="ipsearch" placeholder="130.246.127.255">
         <div class="input-group-append" style="background-color: white;">
             <button class="btn btn-outline-primary" id="ipfind">Find IP or Subnet</button>
         </div>
     </div>
     <div class="input-group mb-1">
-        <button class="btn form-control" class="form-control" id="show_hilbert">Toggle Hilbert Curve</button>
+        <button class="btn form-control" id="show_hilbert">Toggle Hilbert Curve</button>
     </div>
 </div>
-
 
 <script>
 <!--
@@ -201,7 +200,7 @@ $.when(
 });
 
 $('#show_hilbert').click(function() {
-    if (polyline === undefined) { 
+    if (polyline === undefined) {
         if (hilbert.length == 0) {
             $.get("xy.json", function(latlngs) {
                 polyline = L.polyline(latlngs, {color: 'red', weight: 1}).addTo(map);
@@ -218,9 +217,5 @@ $('#show_hilbert').click(function() {
 
 -->
 </script>
-
-
-
 </body>
 </html>
-
