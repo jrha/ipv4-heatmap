@@ -39,14 +39,14 @@
         <div class="col-">
             <div><h1>Key</h1></div>
 <?php
-    echo "<div class=\"scale\" style=\"background-color: #202020;\" title=\"IP in NetBox, but never seen.\">IP</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #404040;\" title=\"DNS for IP in NetBox, but never seen.\">DNS</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #154b7a\">&gt;Year</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #006a95\">Year</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #00879f\">Month</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #00a6a5\">Week</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #00c79c\">Yesterday</div>\n";
-    echo "<div class=\"scale\" style=\"background-color: #54e387\">Today</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #202020\" title=\"IP in NetBox, but never seen.\">IP</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #404040\" title=\"DNS for IP in NetBox, but never seen.\">DNS</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #154b7a\" title=\"IP seen more than a year ago\">&gt;Year</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #006a95\" title=\"IP seen this year\">Year</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #00879f\" title=\"IP seen this month \">Month</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #00a6a5\" title=\"IP seen this week\">Week</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #00c79c\" title=\"IP seen yesterday\">Yesterday</div>\n";
+    echo "            <div class=\"scale\" style=\"background-color: #54e387\" title=\"IP seen today\">Today</div>\n";
 ?>
         </div>
         <div class="col-lg">
